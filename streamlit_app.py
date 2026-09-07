@@ -1,11 +1,11 @@
 # -----------------------------------------------------------------------------
-# Deep Agents Chatbot — Streamlit app
+# AI Research & Deep Agent Assistant — Streamlit app
 # -----------------------------------------------------------------------------
-# A conversational chatbot built on the `deepagents` library that demonstrates
-# multiple Deep Agent features:
+# A conversational AI research assistant built with `deepagents` that brings
+# together planning, tools, skills, memory, file handling, and subagents.
 #
-# 1. Basic Deep Agent
-# 2. Custom model
+# 1. Deep Agent orchestration
+# 2. Groq model integration
 # 3. Custom system prompt
 # 4. Tavily web search
 # 5. Built-in planning with write_todos
@@ -34,24 +34,16 @@ from pydantic import BaseModel, Field
 # Environment
 # -----------------------------------------------------------------------------
 
+# The app lives at the repository root, so project files such as skills/
+# and projects/ can be referenced directly from ROOT_DIR.
 ROOT_DIR = Path(__file__).parent
-DEMO_DIR = ROOT_DIR / "deepagentsdemo"
+DEMO_DIR = ROOT_DIR
 
-load_dotenv(ROOT_DIR.parent / ".env")
-
-import os
-from dotenv import load_dotenv
-from pathlib import Path
-
-ROOT_DIR = Path(__file__).parent
-
-load_dotenv(ROOT_DIR.parent / ".env")
-
-print("ENV FILE:", ROOT_DIR.parent / ".env")
-print("GROQ KEY LOADED:", bool(os.getenv("GROQ_API_KEY")))
+# Keep API keys in .env locally. Never commit the real .env file to Git.
+load_dotenv(ROOT_DIR / ".env")
 
 # -----------------------------------------------------------------------------
-# Deep Agents / LangChain imports
+# Deep Agent and supporting library imports
 # -----------------------------------------------------------------------------
 
 from deepagents import create_deep_agent
@@ -67,7 +59,7 @@ from tavily import TavilyClient
 
 
 # -----------------------------------------------------------------------------
-# Custom tool — Tavily internet search
+# Web search tool powered by Tavily
 # -----------------------------------------------------------------------------
 
 tavily_client = TavilyClient(
@@ -112,7 +104,7 @@ class ResearchFindings(BaseModel):
 
 
 # -----------------------------------------------------------------------------
-# Context engineering helpers
+# Context and skill-loading helpers
 # -----------------------------------------------------------------------------
 
 def load_agents_md() -> str:
@@ -127,7 +119,7 @@ def load_agents_md() -> str:
 
 def load_skill_seed_files() -> dict:
     """
-    Read every file under deepagentsdemo/skills/
+    Read every file under skills/
     and convert it to in-state file data so the
     StateBackend agent can discover and read skills.
     """
@@ -375,7 +367,7 @@ def build_agent(cfg: dict):
 
 
 # -----------------------------------------------------------------------------
-# Rendering helpers
+# Streamlit rendering helpers
 # -----------------------------------------------------------------------------
 
 def extract_text(content) -> str:
@@ -582,18 +574,16 @@ def render_files(files: dict):
 # -----------------------------------------------------------------------------
 
 st.set_page_config(
-    page_title="Deep Agents Chatbot",
+    page_title="AI Research & Deep Agent Assistant",
     page_icon="🧠",
     layout="wide",
 )
 
-st.title("🧠 Deep Agents Chatbot")
+st.title("🧠 AI Research & Deep Agent Assistant")
 
 st.caption(
-    "Planning • Virtual file system • Context engineering "
-    "(AGENTS.md + memory) • Skills • Subagents "
-    "(incl. structured output) • Swappable backends • "
-    "Thread memory via checkpointer"
+    "Agentic research • Planning • Web search • Skills • "
+    "Subagents • Context engineering • Memory • Structured output"
 )
 
 
@@ -654,10 +644,10 @@ with st.sidebar:
             "StoreBackend (cross-thread store)",
         ],
         help=(
-            "StateBackend = ephemeral per-thread; "
-            "FilesystemBackend = real files under "
-            "deepagentsdemo/; StoreBackend = survives "
-            "across threads via a LangGraph store."
+    "StateBackend = ephemeral per-thread; "
+    "FilesystemBackend = real files under "
+    "the project directory; StoreBackend = survives "
+    "across threads via a LangGraph store."
         ),
     )
 
